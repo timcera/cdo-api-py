@@ -1,7 +1,8 @@
-from cdo_api_py import Client
-import pandas as pd
 from datetime import datetime
 from pprint import pprint
+
+import pandas as pd
+from cdo_api_py import Client
 
 # initialize a client with a developer token ,
 # note 5 calls per second and 1000 calls per day limit for each token
@@ -34,8 +35,8 @@ enddate = datetime(2016, 12, 31)
 
 # after examining the available datasets, we decided 'GHCND' is the one we want,
 # and that we really want daily min and max temperatures
-datasetid='GHCND'
-datatypeid=['TMIN', 'TMAX', 'PRCP']
+datasetid = "GHCND"
+datatypeid = ["TMIN", "TMAX", "PRCP"]
 
 # lets find stations that meet all our criteria
 stations = my_client.find_stations(
@@ -44,7 +45,8 @@ stations = my_client.find_stations(
     startdate=startdate,
     enddate=enddate,
     datatypeid=datatypeid,
-    return_dataframe=True)
+    return_dataframe=True,
+)
 pprint(stations)
 
 # we can get big lists of station data with
@@ -52,16 +54,16 @@ big_df = pd.DataFrame()
 for rowid, station in stations.iterrows():  # remember this is a pandas dataframe!
     station_data = my_client.get_data_by_station(
         datasetid=datasetid,
-        stationid=station['id'],    # remember this is a pandas dataframe
+        stationid=station["id"],  # remember this is a pandas dataframe
         startdate=startdate,
         enddate=enddate,
         return_dataframe=True,  # this defaults to True
-        include_station_meta=True   # flatten station metadata with ghcnd readings
+        include_station_meta=True,  # flatten station metadata with ghcnd readings
     )
     pprint(station_data)
     big_df = pd.concat([big_df, station_data], sort=False)
 
 # Now we can do whatever we want with our big dataframe. Lets sort it by date and save it
 print(big_df)
-big_df = big_df.sort_values(by='date').reset_index()
-big_df.to_csv('dc_ghcnd_example_output.csv')
+big_df = big_df.sort_values(by="date").reset_index()
+big_df.to_csv("dc_ghcnd_example_output.csv")
