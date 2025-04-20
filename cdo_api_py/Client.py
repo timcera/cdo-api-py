@@ -13,7 +13,17 @@ from .conf import (
     DATETIME_FMT_SHORT,
     ENDPOINTS,
 )
-from .exceptions import *
+from .exceptions import (
+    AuthError,
+    BadExtentError,
+    InvalidDatestring,
+    InvalidEndpoint,
+    Request400Error,
+    Request502Error,
+    RequestsPerDayLimitExceeded,
+    RequestsPerSecondLimitExceeded,
+    RequiredArgumentError,
+)
 
 
 class BaseClient:
@@ -362,7 +372,7 @@ class Client(BaseClient):
                 r_json = r.json()
                 if "results" in r_json.keys():
                     results += r.json()["results"]
-            except:
+            except:  # noqa: E722
                 print(f"Warning: could not squash response: \n {r}, {r.content}")
         return results
 
